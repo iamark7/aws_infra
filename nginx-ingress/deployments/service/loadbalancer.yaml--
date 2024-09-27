@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress
+  namespace: nginx-ingress
+  annotations:
+    ### Ref https://gist.github.com/mgoodness/1a2926f3b02d8e8149c224d25cc57dc1
+    ### https://github.com/kubernetes-sigs/aws-load-balancer-controller/blob/main/docs/guide/service/annotations.md
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-02f7779a9421963ab,subnet-0e26e2d6e397c08d8"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    #service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "true"
+    service.beta.kubernetes.io/aws-load-balancer-inbound-sg-rules-on-private-link-traffic: "off"
+    #service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: "preserve_client_ip.enabled=true"
+    service.beta.kubernetes.io/aws-load-balancer-attributes: "dns_record.client_routing_policy=availability_zone_affinity,load_balancing.cross_zone.enabled=true"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
+    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "CreatedBy=CloudOps_IAC,Product=Systech-Platform,Environment=demo,Owner=Unisecure-Lite"
+    service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "80"
+    # load balancer name should be 32 chars length
+    service.beta.kubernetes.io/aws-load-balancer-name: "systech-platform-nginx-ingress"
+    #service.beta.kubernetes.io/aws-load-balancer-security-groups: sg-055f0ee1f173e16ac
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:460617843600:certificate/6ac05c17-5a8c-4450-bad4-bf029a455fdc
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  - port: 443
+    targetPort: http
+    protocol: TCP
+    name: https
+  selector:
+    app: nginx-ingress
