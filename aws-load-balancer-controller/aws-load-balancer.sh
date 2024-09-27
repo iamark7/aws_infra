@@ -28,7 +28,7 @@ if [[ -z "$iam_albcontroller_policy" ]]; then
 	aws iam create-policy \
 		--policy-name $IAM_LOADBALANCERCONTROLLER_POLICY \
 		--policy-document file://./iam_policy.json \
-		--tags '[{"Key":"Product","Value":"Hawkeye"},{"Key":"OWNER", "Value":"DevOps"},{"Key":"ClusterName", "Value":"hawkeye-dev"},{"Key":"CreatedBy", "Value":"CloudOps_IAC"}]' \
+		--tags '[{"Key":"Product","Value":"Hawkeye"},{"Key":"OWNER", "Value":"DevOps"},{"Key":"ClusterName", "Value":"hawkeye-qa"},{"Key":"CreatedBy", "Value":"CloudOps_IAC"}]' \
 		--profile ${PROFILE}
 	echo "***** Policy 'AWSLoadBalancerControllerIAMPolicy' has been created *****"
 else
@@ -76,7 +76,7 @@ if [[ -z "$iam_albcontroller_role" ]]; then
 	aws iam create-role \
 		--role-name $EKS_LOADBALANCERCONTROLLER_ROLE \
 		--assume-role-policy-document file://./load-balancer-role-trust-policy.json \
-		--tags '[{"Key":"Product","Value":"hawkeye"},{"Key":"OWNER", "Value":"DevOps"},{"Key":"ClusterName", "Value":"hawkeye-dev"},{"Key":"CreatedBy", "Value":"CloudOps_IAC"}]' \
+		--tags '[{"Key":"Product","Value":"hawkeye"},{"Key":"OWNER", "Value":"DevOps"},{"Key":"ClusterName", "Value":"hawkeye-qa"},{"Key":"CreatedBy", "Value":"CloudOps_IAC"}]' \
 		--profile ${PROFILE}
 	echo "***** Role 'AmazonEKSLoadBalancerControllerRole' has been created *****"
 else

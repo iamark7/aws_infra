@@ -4,7 +4,7 @@
 #
 #
 # Created: 18 Sep 2024
-# Description : To create infra required for hawkeye-dev
+# Description : To create infra required for hawkeye-qa
 # Authors : Muthuselvam Annamalai, Suresh Selvam
 #
 #
@@ -256,7 +256,7 @@ cat > /tmp/eks_cluster_nodegroup_sg_creation_template.json << EOF
 }
 EOF
 
-cat > /tmp/eks-cluster-nodegroup-sg-creation-for-hawkeye-dev-params.json << EOF
+cat > /tmp/eks-cluster-nodegroup-sg-creation-for-hawkeye-qa-params.json << EOF
 [
         {
             "ParameterKey": "VpcId",
@@ -274,15 +274,15 @@ cat > /tmp/eks-cluster-nodegroup-sg-creation-for-hawkeye-dev-params.json << EOF
 EOF
 
 aws cloudformation create-stack --retain-except-on-create \
-    --stack-name eks-cluster-nodegroup-sg-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+    --stack-name eks-cluster-nodegroup-sg-creation-for-hawkeye-qa-${CLUSTER_NAME} \
     --template-body file:///tmp/eks_cluster_nodegroup_sg_creation_template.json \
-    --parameters file:///tmp/eks-cluster-nodegroup-sg-creation-for-hawkeye-dev-params.json \
+    --parameters file:///tmp/eks-cluster-nodegroup-sg-creation-for-hawkeye-qa-params.json \
     --tags Key=Environment,Value=${ENVIRONMENT} Key=Product,Value=${PRODUCT} Key=CreatedBy,Value=${CREATEDBY} Key=Owner,Value=${OWNER} \
     --profile ${PROFILE}
 
 ### We are waiting for the cloud formation script to complete the resource creation as We need the Resource Detaisl to proceed further
 aws cloudformation wait stack-create-complete \
-    --stack-name eks-cluster-nodegroup-sg-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+    --stack-name eks-cluster-nodegroup-sg-creation-for-hawkeye-qa-${CLUSTER_NAME} \
     --profile ${PROFILE}
 
 ## Retrieving the Security Group ID created from the above stack
@@ -688,7 +688,7 @@ CLUSTER_SUBNET_IDS=$(aws ec2 describe-subnets \
 
 
 # aws cloudformation create-stack --retain-except-on-create \
-#     --stack-name postgresql-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+#     --stack-name postgresql-creation-for-hawkeye-qa-${CLUSTER_NAME} \
 #     --parameters ParameterKey=DBPassword,ParameterValue="C1Tad3l!" \
 #     --template-body file:///tmp/postgresql_rds_creation_template.json \
 #     --tags Key=Environment,Value=${ENVIRONMENT} Key=Product,Value=${PRODUCT} Key=CreatedBy,Value=${CREATEDBY} Key=Owner,Value=${OWNER} \
@@ -792,7 +792,7 @@ cat > /tmp/s3_buket_creation_template.json << EOF
 EOF
 
 aws cloudformation create-stack --retain-except-on-create \
-    --stack-name s3-bucket-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+    --stack-name s3-bucket-creation-for-hawkeye-qa-${CLUSTER_NAME} \
     --template-body file:///tmp/s3_buket_creation_template.json \
     --tags Key=Environment,Value=${ENVIRONMENT} Key=Product,Value=${PRODUCT} Key=CreatedBy,Value=${CREATEDBY} Key=Owner,Value=${OWNER} \
     --profile ${PROFILE}
@@ -888,13 +888,13 @@ EOF
 ##https://docs.aws.amazon.com/cli/latest/reference/cloudformation/wait/stack-create-complete.html
 
 aws cloudformation create-stack --retain-except-on-create \
-    --stack-name vpc-endpoint-security-group-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+    --stack-name vpc-endpoint-security-group-creation-for-hawkeye-qa-${CLUSTER_NAME} \
     --template-body file:///tmp/vpc_sg_creation_template.json \
     --tags Key=Environment,Value=${ENVIRONMENT} Key=Product,Value=${PRODUCT} Key=CreatedBy,Value=${CREATEDBY} Key=Owner,Value=${OWNER} \
     --profile ${PROFILE}
 
 aws cloudformation wait stack-create-complete \
-    --stack-name vpc-endpoint-security-group-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+    --stack-name vpc-endpoint-security-group-creation-for-hawkeye-qa-${CLUSTER_NAME} \
     --profile ${PROFILE}
 
 # aws ec2 describe-security-groups \
@@ -950,7 +950,7 @@ cat > /tmp/vpc_endpoint_creation_template.json << EOF
           "MinLength" : 1,
           "MaxLength" : 255,
           "AllowedPattern" : "^[a-zA-Z][-a-zA-Z0-9]*$",
-          "Default" : "vpc-endpoint-security-group-creation-for-hawkeye-dev"
+          "Default" : "vpc-endpoint-security-group-creation-for-hawkeye-qa"
         }
     },
 
@@ -980,7 +980,7 @@ cat > /tmp/vpc_endpoint_creation_template.json << EOF
 EOF
 
 #aws cloudformation create-stack --retain-except-on-create \
-#    --stack-name vpc-enpoint-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+#    --stack-name vpc-enpoint-creation-for-hawkeye-qa-${CLUSTER_NAME} \
 #    --template-body file:///tmp/vpc_endpoint_creation_template.json \
 #    --parameters ParameterKey=EndpointName,ParameterValue=$CLUSTER_NAME-vpc-endpoint-ecr-dkr \
 #    --tags Key=Environment,Value=${ENVIRONMENT} Key=Product,Value=${PRODUCT} Key=CreatedBy,Value=${CREATEDBY} Key=Owner,Value=${OWNER} \
@@ -1001,7 +1001,7 @@ cat > /tmp/vpc-endpoint-creation-ecr-api-params.json << EOF
 EOF
 
 aws cloudformation create-stack --retain-except-on-create \
-    --stack-name vpc-enpoint-ecr-api-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+    --stack-name vpc-enpoint-ecr-api-creation-for-hawkeye-qa-${CLUSTER_NAME} \
     --template-body file:///tmp/vpc_endpoint_creation_template.json \
     --parameters file:///tmp/vpc-endpoint-creation-ecr-api-params.json \
     --tags Key=Environment,Value=${ENVIRONMENT} Key=Product,Value=${PRODUCT} Key=CreatedBy,Value=${CREATEDBY} Key=Owner,Value=${OWNER} \
@@ -1024,7 +1024,7 @@ cat > /tmp/vpc-endpoint-creation-ecr-dkr-params.json << EOF
 EOF
 
 aws cloudformation create-stack --retain-except-on-create \
-    --stack-name vpc-enpoint-ecr-dkr-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+    --stack-name vpc-enpoint-ecr-dkr-creation-for-hawkeye-qa-${CLUSTER_NAME} \
     --template-body file:///tmp/vpc_endpoint_creation_template.json \
     --parameters file:///tmp/vpc-endpoint-creation-ecr-dkr-params.json \
     --tags Key=Environment,Value=${ENVIRONMENT} Key=Product,Value=${PRODUCT} Key=CreatedBy,Value=${CREATEDBY} Key=Owner,Value=${OWNER} \
@@ -1046,7 +1046,7 @@ cat > /tmp/vpc-endpoint-creation-eks-params.json << EOF
 EOF
 
 aws cloudformation create-stack --retain-except-on-create \
-    --stack-name vpc-enpoint-eks-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+    --stack-name vpc-enpoint-eks-creation-for-hawkeye-qa-${CLUSTER_NAME} \
     --template-body file:///tmp/vpc_endpoint_creation_template.json \
     --parameters file:///tmp/vpc-endpoint-creation-eks-params.json \
     --tags Key=Environment,Value=${ENVIRONMENT} Key=Product,Value=${PRODUCT} Key=CreatedBy,Value=${CREATEDBY} Key=Owner,Value=${OWNER} \
@@ -1068,7 +1068,7 @@ cat > /tmp/vpc-endpoint-creation-rds-params.json << EOF
 EOF
 
 aws cloudformation create-stack --retain-except-on-create \
-    --stack-name vpc-enpoint-rds-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+    --stack-name vpc-enpoint-rds-creation-for-hawkeye-qa-${CLUSTER_NAME} \
     --template-body file:///tmp/vpc_endpoint_creation_template.json \
     --parameters file:///tmp/vpc-endpoint-creation-rds-params.json \
     --tags Key=Environment,Value=${ENVIRONMENT} Key=Product,Value=${PRODUCT} Key=CreatedBy,Value=${CREATEDBY} Key=Owner,Value=${OWNER} \
@@ -1090,7 +1090,7 @@ cat > /tmp/vpc-endpoint-creation-ec2-params.json << EOF
 EOF
 
 aws cloudformation create-stack --retain-except-on-create \
-    --stack-name vpc-enpoint-ec2-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+    --stack-name vpc-enpoint-ec2-creation-for-hawkeye-qa-${CLUSTER_NAME} \
     --template-body file:///tmp/vpc_endpoint_creation_template.json \
     --parameters file:///tmp/vpc-endpoint-creation-ec2-params.json \
     --tags Key=Environment,Value=${ENVIRONMENT} Key=Product,Value=${PRODUCT} Key=CreatedBy,Value=${CREATEDBY} Key=Owner,Value=${OWNER} \
@@ -1112,7 +1112,7 @@ cat > /tmp/vpc-endpoint-creation-ssm-params.json << EOF
 EOF
 
 aws cloudformation create-stack --retain-except-on-create \
-    --stack-name vpc-enpoint-ssm-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+    --stack-name vpc-enpoint-ssm-creation-for-hawkeye-qa-${CLUSTER_NAME} \
     --template-body file:///tmp/vpc_endpoint_creation_template.json \
     --parameters file:///tmp/vpc-endpoint-creation-ssm-params.json \
     --tags Key=Environment,Value=${ENVIRONMENT} Key=Product,Value=${PRODUCT} Key=CreatedBy,Value=${CREATEDBY} Key=Owner,Value=${OWNER} \
@@ -1134,7 +1134,7 @@ cat > /tmp/vpc-endpoint-creation-secretsmanager-params.json << EOF
 EOF
 
 aws cloudformation create-stack --retain-except-on-create \
-    --stack-name vpc-enpoint-secretsmanager-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+    --stack-name vpc-enpoint-secretsmanager-creation-for-hawkeye-qa-${CLUSTER_NAME} \
     --template-body file:///tmp/vpc_endpoint_creation_template.json \
     --parameters file:///tmp/vpc-endpoint-creation-secretsmanager-params.json \
     --tags Key=Environment,Value=${ENVIRONMENT} Key=Product,Value=${PRODUCT} Key=CreatedBy,Value=${CREATEDBY} Key=Owner,Value=${OWNER} \
@@ -1199,7 +1199,7 @@ cat > /tmp/s3_gateway_vpc_endpoint_creation_template.json << EOF
 EOF
 
 aws cloudformation create-stack --retain-except-on-create \
-    --stack-name vpc-enpoint-s3-gateway-creation-for-hawkeye-dev-${CLUSTER_NAME} \
+    --stack-name vpc-enpoint-s3-gateway-creation-for-hawkeye-qa-${CLUSTER_NAME} \
     --template-body file:///tmp/s3_gateway_vpc_endpoint_creation_template.json \
     --tags Key=Environment,Value=${ENVIRONMENT} Key=Product,Value=${PRODUCT} Key=CreatedBy,Value=${CREATEDBY} Key=Owner,Value=${OWNER} \
     --profile ${PROFILE}
